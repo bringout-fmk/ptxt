@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 354
-  Top = 246
+  Left = 295
+  Top = 275
   Width = 588
   Height = 515
   Caption = 'PTXT sigma-com'
@@ -30,7 +30,7 @@ object Form1: TForm1
       Top = 8
       Width = 91
       Height = 13
-      Caption = 'Ver 01.05, 03.2003'
+      Caption = 'Ver 01.07, 07.2004'
     end
     object CheckBox1: TCheckBox
       Left = 79

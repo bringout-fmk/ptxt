@@ -7,7 +7,7 @@ uses
   ppPrnabl, ppClass, ppStrtch, ppRichTx, ppBands, ppProd, ppReport, ppComm,
   ppRelatv, ppCache, ppDB, ppTxPipe, StdCtrls, ppVar, ppCtrls, clipfn32, printers,
   jpeg, RxGIF, ExtCtrls, ppViewr, ppTypes, ppPrvDlg, Buttons, Mask, ppForms, dmUtil,
-  ActnList, ppArchiv; // ppSearchPreview; //ppCustomSearchEngine, Ovo sam privremeno izbacio
+  ActnList, ppArchiv,IniFiles; // ppSearchPreview; //ppCustomSearchEngine, Ovo sam privremeno izbacio
 
 type
   //TFontStyle = (fsBold, fsItalic, fsUnderline, fsStrikeOut);
@@ -150,7 +150,13 @@ uses ufrmTrazi;
 
 procedure TForm1.FormCreate(Sender: TObject);
 var i, j :integer;
-
+    // varijable dodane 15.03.2004
+    // *************
+    ini  :TIniFile;
+    res:  string;
+    nLeftMargin: integer;
+    ExePath: string;
+    // *************
 begin
    Atributi:=TAtributi.Create;
    Args:=TArgumenti.Create;
@@ -240,11 +246,57 @@ begin
      ppGenByImage.Visible:=Args.Logo;
 
 
-     if Args.AReader then  begin
+
+      if Args.AReader then  begin
       OpenDialog1.FileName := ParamStr(1);
 
       Button1.Click;
-     end else if Args.Print then begin
+      end else if Args.Print then begin
+
+      // Kod dodan 15.03.2004 - 14.00
+      // AUTOR: Emir Zecic
+
+      // SVRHA: Mogucnost podesavanje imena printera
+      // u FMK.INI fajlu bez posredovanja PrintDialog boxa
+
+      // OPIS: Ako postoji sekcija [PTXT] sa kljucem
+      // DefaultWinPrinter, onda se taj string preuzima
+      // i setuje kao default-ni printer, u protivnom,
+      // korisnik ce pomocu PrintDialoga da izabere printer.
+
+
+      ExePath := ExtractFilePath(Application.ExeName);
+      ini:= TIniFile.Create(ExePath+'FMK.INI');
+      try
+
+      // procitani string (ime printera)
+      // smjesti u varijablu res
+
+        res := ini.ReadString('PTXT', 'DefaultWinPrinter', '');
+        nLeftMargin := ini.ReadInteger('PTXT', 'LeftMargin', 5);
+
+      finally
+        ini.Free;
+      end;
+
+      if res<>'' then begin
+          ppReport1.ShowPrintDialog:=false;
+          ppReport1.PrinterSetup.PrinterName:=res;
+      end;
+
+      // ako je lijeva margina podesena na vise od 5 pomjeri je
+      // ali smanji i samu sirinu ppRichText-a
+      if nLeftMargin > 5 then begin
+        ppRichText.Left := nLeftMargin;
+        ppRichText.Width := ppRichText.Width - nLeftMargin;
+      end;
+
+      //*******************************************//
+      //  ZAVRSETAK DODANOG KODA 15.03.2004        //                      //
+      //*******************************************//
+
+
+
       ppViewer1.Print;
 
 
