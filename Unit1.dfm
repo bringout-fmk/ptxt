@@ -500,8 +500,8 @@ object Form1: TForm1
     FileType = ftFixedLength
     UserName = 'OutfPipeline'
     OnLast = ppOutfPipelineLast
-    Left = 16
-    Top = 104
+    Left = 8
+    Top = 112
     object Linija: TppField
       FieldAlias = 'Linija'
       FieldName = 'Linija'

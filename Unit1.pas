@@ -320,6 +320,7 @@ begin
   ppRichText.RichText := StrTran(ppRichText.RichText,'\fcharset238','',0,0);
   ppRichText.RichText := StrTran(ppRichText.RichText,'\viewkind4','',0,0);
   ppRichText.RichText := StrTran(ppRichText.RichText,'\fnil','',0,0);
+  //ppRichText.RichText := StrTran(ppRichText.RichText,'#%NLIN_#','\par ',0,0);
 
 
   //ppRichText.SaveToFile('c:\rtf' + IntToStr(nCounter));
@@ -386,7 +387,12 @@ end;
 
 procedure TForm1.ppGroup2GetBreakValue(Sender: TObject;
   var aBreakValue: String);
+var
+  rt: TppRichText;
+
 begin
+
+
   if xLeft(aBreakValue,8)='#%NSTR_#' then begin
      //ppOutfPipeline.Next;
      //ppOutfPipeline.
@@ -396,6 +402,7 @@ begin
      Atributi.TekStrana:= IntToStr(strtoint(Atributi.Tekstrana)+1);
      //ppOutfPipeline.Prior;
   end;
+
   aBreakValue:=Atributi.TekStrana;
 end;
 
@@ -522,8 +529,9 @@ while AttrPos>=0 do begin
      end else if  rt.SelText = '#%NSTR_#' then begin
            rt.ClearSelection;
 
-     end else if  rt.SelText = '#%NLIN_#' then begin
-           rt.SelText := ' \par ';
+     //end else if  rt.SelText = '#%NLIN_#' then begin
+     //      rt.ClearSelection;
+
 
      end else if  rt.SelText = '#%KON17#' then begin
            //Atributi.Font.Size:=7;
@@ -573,7 +581,6 @@ while AttrPos>=0 do begin
            Atributi.Font.Size:=100;
            Atributi.Font.Name:='SC Art';
            rt.ClearSelection;
-           rt.SelAttributes.Height := rt.SelAttributes.Height * 3;
            rt.SelStart:=AttrPos; rt.SelLength:=300;
 
            rt.SelAttributes.Style:=Atributi.Fonts;
