@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 295
-  Top = 275
+  Left = 275
+  Top = 123
   Width = 588
   Height = 515
   Caption = 'PTXT sigma-com'
@@ -17,7 +17,7 @@ object Form1: TForm1
   TextHeight = 13
   object pnlStatusBar: TPanel
     Left = 0
-    Top = 454
+    Top = 461
     Width = 580
     Height = 27
     Align = alBottom
@@ -30,7 +30,7 @@ object Form1: TForm1
       Top = 8
       Width = 91
       Height = 13
-      Caption = 'Ver 01.07, 07.2004'
+      Caption = 'Ver 01.50, 01.2006'
     end
     object CheckBox1: TCheckBox
       Left = 79
@@ -54,7 +54,7 @@ object Form1: TForm1
     Left = 0
     Top = 41
     Width = 580
-    Height = 413
+    Height = 420
     Align = alClient
     Caption = 'pnlPreview'
     TabOrder = 1
@@ -62,7 +62,7 @@ object Form1: TForm1
       Left = 1
       Top = 1
       Width = 578
-      Height = 411
+      Height = 418
       Align = alClient
       BevelOuter = bvNone
       PageColor = clWindow
@@ -500,8 +500,8 @@ object Form1: TForm1
     FileType = ftFixedLength
     UserName = 'OutfPipeline'
     OnLast = ppOutfPipelineLast
-    Left = 8
-    Top = 96
+    Left = 16
+    Top = 104
     object Linija: TppField
       FieldAlias = 'Linija'
       FieldName = 'Linija'
@@ -515,7 +515,7 @@ object Form1: TForm1
     DataPipeline = ppOutfPipeline
     PrinterSetup.BinName = 'Default'
     PrinterSetup.DocumentName = 'Clipper - Win report'
-    PrinterSetup.PaperName = 'A4'
+    PrinterSetup.PaperName = 'A4 (210 x 297 mm)'
     PrinterSetup.PrinterName = 'Default'
     PrinterSetup.mmMarginBottom = 6350
     PrinterSetup.mmMarginLeft = 5700

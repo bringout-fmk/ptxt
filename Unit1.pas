@@ -150,13 +150,12 @@ uses ufrmTrazi;
 
 procedure TForm1.FormCreate(Sender: TObject);
 var i, j :integer;
-    // varijable dodane 15.03.2004
-    // *************
+
     ini  :TIniFile;
     res:  string;
     nLeftMargin: integer;
     ExePath: string;
-    // *************
+
 begin
    Atributi:=TAtributi.Create;
    Args:=TArgumenti.Create;
@@ -253,18 +252,6 @@ begin
       Button1.Click;
       end else if Args.Print then begin
 
-      // Kod dodan 15.03.2004 - 14.00
-      // AUTOR: Emir Zecic
-
-      // SVRHA: Mogucnost podesavanje imena printera
-      // u FMK.INI fajlu bez posredovanja PrintDialog boxa
-
-      // OPIS: Ako postoji sekcija [PTXT] sa kljucem
-      // DefaultWinPrinter, onda se taj string preuzima
-      // i setuje kao default-ni printer, u protivnom,
-      // korisnik ce pomocu PrintDialoga da izabere printer.
-
-
       ExePath := ExtractFilePath(Application.ExeName);
       ini:= TIniFile.Create(ExePath+'FMK.INI');
       try
@@ -290,11 +277,6 @@ begin
         ppRichText.Left := nLeftMargin;
         ppRichText.Width := ppRichText.Width - nLeftMargin;
       end;
-
-      //*******************************************//
-      //  ZAVRSETAK DODANOG KODA 15.03.2004        //                      //
-      //*******************************************//
-
 
 
       ppViewer1.Print;
@@ -540,6 +522,9 @@ while AttrPos>=0 do begin
      end else if  rt.SelText = '#%NSTR_#' then begin
            rt.ClearSelection;
 
+     end else if  rt.SelText = '#%NLIN_#' then begin
+           rt.SelText := ' \par ';
+
      end else if  rt.SelText = '#%KON17#' then begin
            //Atributi.Font.Size:=7;
            //Atributi.Font.Name:='SC Courier New 12';
@@ -578,6 +563,17 @@ while AttrPos>=0 do begin
            Atributi.Font.Size:=10;
            Atributi.Font.Name:='SC Tahoma Mono';
            rt.ClearSelection;
+           rt.SelStart:=AttrPos; rt.SelLength:=300;
+
+           rt.SelAttributes.Style:=Atributi.Fonts;
+           rt.SelAttributes.Size:=Atributi.Font.Size;
+           rt.SelAttributes.Name:=Atributi.Font.Name;
+
+     end else if  rt.SelText = '#%AR100#' then begin
+           Atributi.Font.Size:=100;
+           Atributi.Font.Name:='SC Art';
+           rt.ClearSelection;
+           rt.SelAttributes.Height := rt.SelAttributes.Height * 3;
            rt.SelStart:=AttrPos; rt.SelLength:=300;
 
            rt.SelAttributes.Style:=Atributi.Fonts;
