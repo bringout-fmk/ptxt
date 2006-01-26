@@ -320,7 +320,7 @@ begin
   ppRichText.RichText := StrTran(ppRichText.RichText,'\fcharset238','',0,0);
   ppRichText.RichText := StrTran(ppRichText.RichText,'\viewkind4','',0,0);
   ppRichText.RichText := StrTran(ppRichText.RichText,'\fnil','',0,0);
-  //ppRichText.RichText := StrTran(ppRichText.RichText,'#%NLIN_#','\par ',0,0);
+  //ppRichText.RichText := StrTran(ppRichText.RichText,'?%NLIN?','\par ',0,0);
 
 
   //ppRichText.SaveToFile('c:\rtf' + IntToStr(nCounter));
@@ -387,17 +387,10 @@ end;
 
 procedure TForm1.ppGroup2GetBreakValue(Sender: TObject;
   var aBreakValue: String);
-var
-  rt: TppRichText;
-
 begin
 
 
   if xLeft(aBreakValue,8)='#%NSTR_#' then begin
-     //ppOutfPipeline.Next;
-     //ppOutfPipeline.
-     //ppOutfPipeline.Next;
-     //if ppoutfPipeline.Last;
      ppOutfPipeline.Next;
      Atributi.TekStrana:= IntToStr(strtoint(Atributi.Tekstrana)+1);
      //ppOutfPipeline.Prior;
@@ -528,9 +521,6 @@ while AttrPos>=0 do begin
 
      end else if  rt.SelText = '#%NSTR_#' then begin
            rt.ClearSelection;
-
-     //end else if  rt.SelText = '#%NLIN_#' then begin
-     //      rt.ClearSelection;
 
 
      end else if  rt.SelText = '#%KON17#' then begin
