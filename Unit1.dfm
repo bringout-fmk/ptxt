@@ -30,7 +30,7 @@ object Form1: TForm1
       Top = 8
       Width = 91
       Height = 13
-      Caption = 'Ver 01.50, 01.2006'
+      Caption = 'Ver 01.52, 03.2006'
     end
     object CheckBox1: TCheckBox
       Left = 79
@@ -501,7 +501,7 @@ object Form1: TForm1
     UserName = 'OutfPipeline'
     OnLast = ppOutfPipelineLast
     Left = 8
-    Top = 112
+    Top = 96
     object Linija: TppField
       FieldAlias = 'Linija'
       FieldName = 'Linija'
@@ -538,7 +538,7 @@ object Form1: TForm1
     TextSearchSettings.Enabled = True
     TextSearchSettings.Visible = True
     Left = 13
-    Top = 144
+    Top = 128
     Version = '7.02'
     mmColumnWidth = 0
     DataPipelineName = 'ppOutfPipeline'
@@ -548,6 +548,7 @@ object Form1: TForm1
       mmPrintPosition = 0
     end
     object ppDetailBand1: TppDetailBand
+      BeforePrint = ppDetailBand1BeforePrint
       PrintHeight = phDynamic
       mmBottomOffset = 0
       mmHeight = 3969

@@ -9,6 +9,11 @@ uses
   jpeg, RxGIF, ExtCtrls, ppViewr, ppTypes, ppPrvDlg, Buttons, Mask, ppForms, dmUtil,
   ActnList, ppArchiv,IniFiles; // ppSearchPreview; //ppCustomSearchEngine, Ovo sam privremeno izbacio
 
+  //const HEIGHT_6  =  3.969;
+  const HEIGHT_6  =  3.969;
+  const HEIGHT_10  =  4.25;
+  const HEIGHT_100  =  20;
+
 type
   //TFontStyle = (fsBold, fsItalic, fsUnderline, fsStrikeOut);
   //{$NODEFINE TFontStyle}
@@ -116,9 +121,7 @@ type
     procedure ppArchiveReader1Cancel(Sender: TObject);
     procedure BitBtn1Click(Sender: TObject);
     procedure ppReport1AssignPreviewFormSettings(Sender: TObject);
-
-
-
+    procedure ppDetailBand1BeforePrint(Sender: TObject);
 
 
 
@@ -165,7 +168,12 @@ begin
    Atributi.Font.Size:=10;
    Atributi.TekStrana:='1';
    Atributi.Fonts:=[];
-   Atributi.RowHeight:=3.969;   // detail band
+   // visina
+   Atributi.RowHeight:= HEIGHT_10;
+
+   ppDetailBand1.Height := Atributi.RowHeight;
+   ppRichText.Height := Atributi.RowHeight;
+
    nCounter := 0;
 
 
@@ -301,30 +309,38 @@ end;
 
 procedure TForm1.ppRichTextPrint(Sender: TObject);
 var
+  rtCurrent: TppRichText;
   sPom:String;
 
 begin
 
-  ppRichtext.Stretch:=False;  // na pocetku svakog reda setuj ovo na false
+  //rtCurrent := Sender As TppRichText;
+
+  // na pocetku svakog reda setuj ovo na false
+  ppRichtext.Stretch:=False;
+
 
   spom:=space(300);
   OemToAnsi(Pchar(ppOutfPipeline.GetFieldAsString('Linija')),PChar(sPom));
   ppRichText.RichText:=sPom;
-  //spom:=ppOutfPipeline.GetFieldAsString('Linija');
-  //ppRichText.RichText:=sPom;
 
   SetRTFAttr(ppRichText); // setuj rtf atribute
+
+
+  ppRichText.Height := Atributi.RowHeight;
+
+  (*
+  if (Atributi.Font.Height > 6) then
+    rtCurrent.Height := 6
+  else
+    rtCurrent.Height := HEIGHT_6;
+  *)
 
   // ciscenje rtf-a !!!!
   ppRichText.RichText := StrTran(ppRichText.RichText,'\fcharset0','',0,0);
   ppRichText.RichText := StrTran(ppRichText.RichText,'\fcharset238','',0,0);
   ppRichText.RichText := StrTran(ppRichText.RichText,'\viewkind4','',0,0);
   ppRichText.RichText := StrTran(ppRichText.RichText,'\fnil','',0,0);
-  //ppRichText.RichText := StrTran(ppRichText.RichText,'?%NLIN?','\par ',0,0);
-
-
-  //ppRichText.SaveToFile('c:\rtf' + IntToStr(nCounter));
-  //Inc(nCounter);
 
 
 end;
@@ -402,6 +418,7 @@ end;
 procedure TForm1.SetRtfAttr(var rt: TppRichText);
 var
  AttrPos: integer;
+ maxRowHeight: double;
 
 begin
 
@@ -410,6 +427,9 @@ rt.SelAttributes.Size:=Atributi.Font.Size;
 rt.SelAttributes.Style:=Atributi.FontS;
 rt.SelAttributes.Name:=Atributi.Font.Name;
 
+
+// tekuæi
+maxRowHeight := 0;
 
 AttrPos:=100;
 while AttrPos>=0 do begin
@@ -421,10 +441,11 @@ while AttrPos>=0 do begin
 
      rt.SelStart:=AttrPos;
      rt.SelLength:=8;
-     if           rt.SelText = '#%INI__#' then begin
+     if  rt.SelText = '#%INI__#' then begin
 
            Atributi.Font.Size:=10;
            Atributi.Font.Name:='SC Tahoma Mono';
+           Atributi.RowHeight := HEIGHT_10;
            rt.ClearSelection;
            rt.SelStart:=AttrPos; rt.SelLength:=300;
 
@@ -432,15 +453,22 @@ while AttrPos>=0 do begin
            rt.SelAttributes.Size:=Atributi.Font.Size;
            rt.SelAttributes.Name:=Atributi.Font.Name;
 
-     end else if   Instr('#%FS',rt.SelText,'x') then begin
+     end else if   Instr('#%FS',rt.SelText, 'x') then begin
            // sablon: '#%FS012#'  - fontsize = 12 pointa
            Atributi.Font.Size:=StrToInt(substr(rt.SelText,5,3));
            Atributi.Font.Name:='SC Tahoma Mono';
-           Atributi.RowHeight:=ppRichText.Height;
+           if (Atributi.Font.Size > 8) then begin
+             if (maxRowHeight < HEIGHT_10) then
+                maxRowHeight := HEIGHT_10;
+           end else begin
+             if (maxRowHeight < HEIGHT_6) then
+                 maxRowHeight := HEIGHT_6;
+           end;
+
            rt.ClearSelection;
            rt.SelStart:=AttrPos; rt.SelLength:=300;
 
-           ppRichtext.Stretch:=True;  // da stane uvecani font...
+           //ppRichtext.Stretch:=True;  // da stane uvecani font...
 
            //Atributi.RowHeight:=Atributi.Font.Size / 10 * ppRichText.Height;
            //ppRichText.Height:=Atributi.RowHeight;
@@ -524,11 +552,12 @@ while AttrPos>=0 do begin
 
 
      end else if  rt.SelText = '#%KON17#' then begin
-           //Atributi.Font.Size:=7;
-           //Atributi.Font.Name:='SC Courier New 12';
+
            Atributi.Font.Size:=8;
-           //Atributi.Font.Name:='SC Courier New 15';
            Atributi.Font.Name:='SC Tahoma Mono 2';
+
+           if (maxRowHeight < HEIGHT_6) then
+              maxRowHeight := HEIGHT_6;
 
            rt.ClearSelection;
            rt.SelStart:=AttrPos; rt.SelLength:=300;
@@ -540,6 +569,10 @@ while AttrPos>=0 do begin
      end else if  rt.SelText = '#%KON20#' then begin
            Atributi.Font.Size:=6;
            Atributi.Font.Name:='SC Tahoma Mono 2';
+
+           if (maxRowHeight < HEIGHT_6) then
+              maxRowHeight := HEIGHT_6;
+
            rt.ClearSelection;
            rt.SelStart:=AttrPos; rt.SelLength:=300;
 
@@ -550,6 +583,10 @@ while AttrPos>=0 do begin
      end else if  rt.SelText = '#%12CPI#' then begin
            Atributi.Font.Size:=10;
            Atributi.Font.Name:='SC Tahoma Mono 2';
+
+           if (maxRowHeight < HEIGHT_10) then
+              maxRowHeight := HEIGHT_10;
+
            rt.ClearSelection;
            rt.SelStart:=AttrPos; rt.SelLength:=300;
 
@@ -560,6 +597,10 @@ while AttrPos>=0 do begin
      end else if  rt.SelText = '#%10CPI#' then begin
            Atributi.Font.Size:=10;
            Atributi.Font.Name:='SC Tahoma Mono';
+
+           if (maxRowHeight < HEIGHT_10) then
+              maxRowHeight := HEIGHT_10;
+
            rt.ClearSelection;
            rt.SelStart:=AttrPos; rt.SelLength:=300;
 
@@ -573,6 +614,9 @@ while AttrPos>=0 do begin
            rt.ClearSelection;
            rt.SelStart:=AttrPos; rt.SelLength:=300;
 
+           if (maxRowHeight < HEIGHT_100) then
+              maxRowHeight := HEIGHT_100;
+
            rt.SelAttributes.Style:=Atributi.Fonts;
            rt.SelAttributes.Size:=Atributi.Font.Size;
            rt.SelAttributes.Name:=Atributi.Font.Name;
@@ -584,6 +628,10 @@ while AttrPos>=0 do begin
 
    end;
 end; // while
+
+
+if (maxRowHeight > 0) then
+  Atributi.RowHeight := maxRowHeight;
 
 end;
 
@@ -678,7 +726,7 @@ begin
 
 
 
-  
+
 end; {procedure, spbPreviewPrintClick}
 
 {------------------------------------------------------------------------------}
@@ -882,6 +930,23 @@ end;
 procedure TForm1.ppReport1AssignPreviewFormSettings(Sender: TObject);
 begin
   ppReport1.TextSearchSettings.Visible:=True;
+end;
+
+(*
+procedure TForm1.ppDetailBand1BeforePrint(Sender: TObject);
+begin
+
+  if (Atributi.Font.Height > 6) then
+    ppDetailBand1.Height := 6
+  else
+    ppDetailBand1.Height := HEIGHT;
+
+end;
+*)
+
+procedure TForm1.ppDetailBand1BeforePrint(Sender: TObject);
+begin
+ ppDetailBand1.Height := Atributi.RowHeight;
 end;
 
 end.

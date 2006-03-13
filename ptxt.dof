@@ -100,7 +100,7 @@ Conditionals=
 DebugSourceDirs=
 UsePackages=0
 [Parameters]
-RunParams=
+RunParams= c:\fmk\fakt\11\OUTF.TXT
 HostApplication=
 Launcher=
 UseLauncher=0
