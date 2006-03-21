@@ -36,6 +36,7 @@ type
     Opis2: String;
     Opis3: String;
     AReader: Boolean;
+    Compat50: Boolean;
   end;
 
 
@@ -84,6 +85,7 @@ type
     ppArchiveReader1: TppArchiveReader;
     OpenDialog1: TOpenDialog;
     BitBtn1: TBitBtn;
+    chkCompat50: TCheckBox;
 
 
     procedure FormCreate(Sender: TObject);
@@ -169,7 +171,10 @@ begin
    Atributi.TekStrana:='1';
    Atributi.Fonts:=[];
    // visina
-   Atributi.RowHeight:= HEIGHT_10;
+   if Args.Compat50 then
+      Atributi.RowHeight:= HEIGHT_6
+   else
+      Atributi.RowHeight:= HEIGHT_10;
 
    ppDetailBand1.Height := Atributi.RowHeight;
    ppRichText.Height := Atributi.RowHeight;
@@ -210,6 +215,7 @@ begin
      Args.Datum:=False;
      Args.Brstrane:=True;
      Args.Print:=False;
+     Args.Compat50:=False;
 
      for j:=2 to paramcount do begin
        Args.opis1:='';
@@ -234,6 +240,12 @@ begin
 
       if paramstr(j)='/noline' then ppLine1.Visible:=False;
 
+      // kompatibilnost sa PTXT < 01.52
+      if paramstr(j)='/c50' then Args.Compat50 := True;
+      if paramstr(j)='/nc50' then Args.Compat50 := False;
+
+      if Args.Compat50 then
+        chkCompat50.Checked := True;
 
      end;
 
@@ -445,7 +457,11 @@ while AttrPos>=0 do begin
 
            Atributi.Font.Size:=10;
            Atributi.Font.Name:='SC Tahoma Mono';
-           Atributi.RowHeight := HEIGHT_10;
+           if Args.Compat50 then
+              Atributi.RowHeight:= HEIGHT_6
+           else
+             Atributi.RowHeight := HEIGHT_10;
+             
            rt.ClearSelection;
            rt.SelStart:=AttrPos; rt.SelLength:=300;
 
@@ -630,9 +646,8 @@ while AttrPos>=0 do begin
 end; // while
 
 
-if (maxRowHeight > 0) then
+if ((maxRowHeight > 0) and (not Args.Compat50)) then
   Atributi.RowHeight := maxRowHeight;
-
 end;
 
 procedure TForm1.ppReport1Cancel(Sender: TObject);

@@ -30,7 +30,7 @@ object Form1: TForm1
       Top = 8
       Width = 91
       Height = 13
-      Caption = 'Ver 01.52, 03.2006'
+      Caption = 'Ver 01.53, 03.2006'
     end
     object CheckBox1: TCheckBox
       Left = 79
@@ -48,6 +48,17 @@ object Form1: TForm1
       Caption = 'CitajArhivu'
       TabOrder = 1
       OnClick = Button1Click
+    end
+    object chkCompat50: TCheckBox
+      Left = 167
+      Top = 4
+      Width = 98
+      Height = 17
+      Caption = 'Compatibility50'
+      Color = clMoneyGreen
+      Enabled = False
+      ParentColor = False
+      TabOrder = 2
     end
   end
   object pnlPreview: TPanel
