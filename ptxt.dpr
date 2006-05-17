@@ -16,4 +16,4 @@ begin
   Application.CreateForm(TfrmTrazi, frmTrazi);
   Application.Run;
 
-  end.
+end.

@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 275
-  Top = 123
+  Left = 443
+  Top = 353
   Width = 588
   Height = 515
   Caption = 'PTXT sigma-com'
@@ -30,7 +30,7 @@ object Form1: TForm1
       Top = 8
       Width = 91
       Height = 13
-      Caption = 'Ver 01.53, 03.2006'
+      Caption = 'Ver 01.54, 05.2006'
     end
     object CheckBox1: TCheckBox
       Left = 79
@@ -512,7 +512,7 @@ object Form1: TForm1
     UserName = 'OutfPipeline'
     OnLast = ppOutfPipelineLast
     Left = 8
-    Top = 96
+    Top = 104
     object Linija: TppField
       FieldAlias = 'Linija'
       FieldName = 'Linija'
@@ -526,7 +526,7 @@ object Form1: TForm1
     DataPipeline = ppOutfPipeline
     PrinterSetup.BinName = 'Default'
     PrinterSetup.DocumentName = 'Clipper - Win report'
-    PrinterSetup.PaperName = 'A4 (210 x 297 mm)'
+    PrinterSetup.PaperName = 'A4'
     PrinterSetup.PrinterName = 'Default'
     PrinterSetup.mmMarginBottom = 6350
     PrinterSetup.mmMarginLeft = 5700
@@ -537,6 +537,7 @@ object Form1: TForm1
     PrinterSetup.PaperSize = 9
     Units = utMillimeters
     AfterPrint = EscapeExecute
+    BeforePrint = ppReport1BeforePrint
     DeviceType = 'Screen'
     OnCancel = ppReport1Cancel
     OnPreviewFormClose = ppReport1Cancel
@@ -548,8 +549,8 @@ object Form1: TForm1
     TextSearchSettings.DefaultString = '<FindText>'
     TextSearchSettings.Enabled = True
     TextSearchSettings.Visible = True
-    Left = 13
-    Top = 128
+    Left = 5
+    Top = 136
     Version = '7.02'
     mmColumnWidth = 0
     DataPipelineName = 'ppOutfPipeline'
@@ -730,14 +731,14 @@ object Form1: TForm1
     SuppressOutline = False
     TextSearchSettings.DefaultString = '<FindText>'
     TextSearchSettings.Enabled = False
-    Left = 11
-    Top = 172
+    Left = 3
+    Top = 180
     Version = '7.02'
   end
   object OpenDialog1: TOpenDialog
     Filter = '*.raf'
     InitialDir = 'c:\sigma'
-    Left = 11
-    Top = 204
+    Left = 3
+    Top = 220
   end
 end

@@ -37,6 +37,7 @@ type
     Opis3: String;
     AReader: Boolean;
     Compat50: Boolean;
+    DocumentName: String;
   end;
 
 
@@ -124,6 +125,7 @@ type
     procedure BitBtn1Click(Sender: TObject);
     procedure ppReport1AssignPreviewFormSettings(Sender: TObject);
     procedure ppDetailBand1BeforePrint(Sender: TObject);
+    procedure ppReport1BeforePrint(Sender: TObject);
 
 
 
@@ -195,8 +197,18 @@ begin
      ppOutfPipeline.FileName:=Edit1.Text;
      ppoutfpipeline.Open;
 
-     for i:=1 to 3 do begin   // pogledaj prve tri linije
-       if Instr('#%LANDS#',ppOutfPipeline.GetFieldAsString('Linija'),'_') then begin
+     // pogledaj prve tri linije
+     for i:=1 to 3 do begin
+       res := ppOutfPipeline.GetFieldAsString('Linija');
+
+       // primjer:
+       // #INI__##%DOCNA#FAKTURA_00232
+       if InStr('#%DOCNA#', res, '_') then begin
+          res := StrTran('
+          Args.DocumentName := Substr(res, 9, 0);
+       end;
+
+       if Instr('#%LANDS#', res, '_') then begin
         ppReport1.Printersetup.Orientation:=poLandscape;
 
         ppLine1.Width:=  ppLine1.Width + 80;
@@ -221,8 +233,6 @@ begin
        Args.opis1:='';
        Args.opis2:='';
 
-
-
        if paramstr(j)='/D' then Args.Datum:=True;
 
        if Upper(paramstr(j))='/1' then Args.Opis1:=substr(paramstr(j),3,0);
@@ -236,23 +246,24 @@ begin
 
        if paramstr(j)='/l' then Args.Logo:=False;
 
-      if paramstr(j)='/s' then Args.Brstrane:=False;
+       if paramstr(j)='/s' then Args.Brstrane:=False;
 
-      if paramstr(j)='/noline' then ppLine1.Visible:=False;
+       if paramstr(j)='/noline' then ppLine1.Visible:=False;
 
-      // kompatibilnost sa PTXT < 01.52
-      if paramstr(j)='/c50' then Args.Compat50 := True;
-      if paramstr(j)='/nc50' then Args.Compat50 := False;
+       // kompatibilnost sa PTXT < 01.52
+       if paramstr(j)='/c50' then Args.Compat50 := True;
+       if paramstr(j)='/nc50' then Args.Compat50 := False;
 
-      if Args.Compat50 then
-        chkCompat50.Checked := True;
+       if Args.Compat50 then
+         chkCompat50.Checked := True;
 
+       res := Upper(SubStr(paramstr(j), 1, 2));
+       if res = '/D' then begin
+          Args.DocumentName := substr(paramstr(j), 3, 0);
+
+       end;
      end;
 
-
-     //if not (Args.Brstrane or Args.Logo or Args.Datum )  then
-     //  ppLine1.Visible:=False;
-       // nista od foutera ne stampaj
 
      ppLabel4.Visible:=Args.BrStrane;
      ppSystemVariable2.Visible:=Args.BrStrane;
@@ -263,7 +274,6 @@ begin
 
      ppGenByLabel.Visible:=Args.Logo;
      ppGenByImage.Visible:=Args.Logo;
-
 
 
       if Args.AReader then  begin
@@ -278,7 +288,6 @@ begin
 
       // procitani string (ime printera)
       // smjesti u varijablu res
-
         res := ini.ReadString('PTXT', 'DefaultWinPrinter', '');
         nLeftMargin := ini.ReadInteger('PTXT', 'LeftMargin', 5);
 
@@ -291,6 +300,7 @@ begin
           ppReport1.PrinterSetup.PrinterName:=res;
       end;
 
+
       // ako je lijeva margina podesena na vise od 5 pomjeri je
       // ali smanji i samu sirinu ppRichText-a
       if nLeftMargin > 5 then begin
@@ -301,15 +311,10 @@ begin
 
       ppViewer1.Print;
 
-
       Btngo.click;
      end else begin
       Btngo.Click;
      end;
-
-
-
-
 
    end;
 end;
@@ -326,8 +331,6 @@ var
 
 begin
 
-  //rtCurrent := Sender As TppRichText;
-
   // na pocetku svakog reda setuj ovo na false
   ppRichtext.Stretch:=False;
 
@@ -341,14 +344,7 @@ begin
 
   ppRichText.Height := Atributi.RowHeight;
 
-  (*
-  if (Atributi.Font.Height > 6) then
-    rtCurrent.Height := 6
-  else
-    rtCurrent.Height := HEIGHT_6;
-  *)
-
-  // ciscenje rtf-a !!!!
+  // ciscenje rtf-a ....
   ppRichText.RichText := StrTran(ppRichText.RichText,'\fcharset0','',0,0);
   ppRichText.RichText := StrTran(ppRichText.RichText,'\fcharset238','',0,0);
   ppRichText.RichText := StrTran(ppRichText.RichText,'\viewkind4','',0,0);
@@ -363,17 +359,6 @@ var
  spom: string;
  i: integer;
 begin
-  //if Value='' then begin
-  //     Value:='0';
-  //end; // i:=Value+1;
-  //AttrPos:=ppRichText.FindText('#%NSTR#',0,220,[]);
-  //if AttrPos>=0 then begin
-  //  Label1.Caption:=IntToSTr(VarType(Value)) ;
-    //if ((VarType(Value)<>varString) or Value='' ) then Value:='0';
-
-  //  i:=Value+1;
-  //  Value:= IntToStr(i);
-  //end;
   Value:=Linija.AsString;
 end;
 
@@ -408,8 +393,6 @@ begin
  // ppLabelaGrupeH.Caption:=ppVariable1.AsString;
 
 end;
-
-
 
 
 
@@ -448,7 +431,6 @@ while AttrPos>=0 do begin
 
    AttrPos := rt.FindText('#%',0,300,[]);
 
-   // ernad#KOND17#husremoviæ
    if AttrPos>=0 then begin
 
      rt.SelStart:=AttrPos;
@@ -461,7 +443,7 @@ while AttrPos>=0 do begin
               Atributi.RowHeight:= HEIGHT_6
            else
              Atributi.RowHeight := HEIGHT_10;
-             
+
            rt.ClearSelection;
            rt.SelStart:=AttrPos; rt.SelLength:=300;
 
@@ -484,18 +466,11 @@ while AttrPos>=0 do begin
            rt.ClearSelection;
            rt.SelStart:=AttrPos; rt.SelLength:=300;
 
-           //ppRichtext.Stretch:=True;  // da stane uvecani font...
-
-           //Atributi.RowHeight:=Atributi.Font.Size / 10 * ppRichText.Height;
-           //ppRichText.Height:=Atributi.RowHeight;
-           //ppDetailBand1.Height:=Atributi.RowHeight;
-
            rt.SelAttributes.Style:=Atributi.Fonts;
            rt.SelAttributes.Size:=Atributi.Font.Size;
            rt.SelAttributes.Name:=Atributi.Font.Name;
 
      end else if  rt.SelText = '#%BON__#' then begin
-
            rt.ClearSelection;
            rt.SelStart:=AttrPos; rt.SelLength:=300;
            Atributi.FontS:=Atributi.Fonts + [fsBold];
@@ -504,13 +479,15 @@ while AttrPos>=0 do begin
            rt.SelAttributes.Name:=Atributi.Font.Name;
 
      end else if  rt.SelText = '#%LANDS#' then begin
-
            rt.ClearSelection;
            ppReport1.PrinterSetup.Orientation:=poLandscape;
            ppRichText.Width:=260;
 
-     end else if  rt.SelText = '#%PORTR#' then begin
+     end else if  rt.SelText = '#%DOCNA#' then begin
+           rt.ClearSelection;
+           rt.Clear;
 
+     end else if  rt.SelText = '#%PORTR#' then begin
            rt.ClearSelection;
            ppRichText.Width:=174.89;
            ppReport1.PrinterSetup.Orientation:=poPortrait;
@@ -674,15 +651,10 @@ begin
       mskPreviewPercentage.Enabled := False;
       mskPreviewPage.Enabled := False;
 
-      //pnlPreviewBar.Cursor := crHourGlass;
-
       ppViewer1.Cursor := crHourGlass;
 
       pnlStatusBar.Cursor := crHourGlass;
 
-      //spbPreviewCancel.Cursor := crArrow;
-
-      //spbPreviewCancel.Enabled := True;
     end
   else
     begin
@@ -905,41 +877,6 @@ procedure TForm1.BitBtn1Click(Sender: TObject);
 
 begin
   ppReport1.Print;
-  //frmTrazi.ShowModal;
-
-  //ppReport1.TextSearchSettings.Enabled:=True;
-  //ppReport1.TextSearchSettings.Visible:=True;
-
-  //srchEngine:=TppCustomSearchEngine.Create(self);
-  //srchEngine.Viewer :=  ppViewer1;
-  //srchEngine.Search(frmTrazi.edTrazi.Text);
-  //srchEngine.HighestPageNoSearched:=99999;
-  //srchEngine.NavigateForwardToNextOccurrence(frmTrazi.edTrazi.Text);
-  //ShowMessage(IntToStr(srchEngine.FirstPageFound));
-
-(*
-  if Empty([frmTrazi.edTrazi.Text]) then
-    ppReport1.TextSearchSettings.Enabled:=False
-  else begin
-    ppReport1.TextSearchSettings.Enabled:=True;
-    ppReport1.TextSearchSettings.DefaultString := frmTrazi.edTrazi.Text;
-    //ppReport1.TextSearchSettings.WalkieTalkie:=srchEngine;
-  end;
-*)
-
-  (*
-
-  frmTrazi.Close;
-
-  srchEngine.Search(ppReport1.TextSearchSettings.DefaultString);
-  srchEngine.NavigateForwardToNextOccurrence(ppReport1.TextSearchSettings.DefaultString);
-  ShowMessage('Nasao: '+IntToStr(srchEngine.FirstPageFound));
-
-  ppReport1.TextSearchSettings.Visible:=True;
-  ppReport1.TextSearchSettings.ShowAll:=True;
-
-  *)
-
 end;
 
 procedure TForm1.ppReport1AssignPreviewFormSettings(Sender: TObject);
@@ -947,21 +884,17 @@ begin
   ppReport1.TextSearchSettings.Visible:=True;
 end;
 
-(*
-procedure TForm1.ppDetailBand1BeforePrint(Sender: TObject);
-begin
-
-  if (Atributi.Font.Height > 6) then
-    ppDetailBand1.Height := 6
-  else
-    ppDetailBand1.Height := HEIGHT;
-
-end;
-*)
-
 procedure TForm1.ppDetailBand1BeforePrint(Sender: TObject);
 begin
  ppDetailBand1.Height := Atributi.RowHeight;
+end;
+
+procedure TForm1.ppReport1BeforePrint(Sender: TObject);
+begin
+
+   if Args.DocumentName <> '' then
+        ppReport1.PrinterSetup.DocumentName := Args.DocumentName;
+
 end;
 
 end.
