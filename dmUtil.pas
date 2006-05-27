@@ -1,6 +1,6 @@
 {******************************************************************************}
 {                                                                              }
-{                   ReportBuilder Report Demos                                    }
+{                   ReportBuilder Report Demos                                 }
 {                                                                              }
 {             Copyright (c) 1996-1999 Digital Metaphors Corporation            }
 {                                                                              }

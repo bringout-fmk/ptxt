@@ -137,8 +137,6 @@ type
 
     procedure SetRtfAttr(var rt: TppRichText);
 
-  public
-    { Public declarations }
   end;
 
 var
@@ -151,8 +149,6 @@ uses ufrmTrazi;
 
 
 {$R *.DFM}
-
-
 
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -204,7 +200,7 @@ begin
        // primjer:
        // #INI__##%DOCNA#FAKTURA_00232
        if InStr('#%DOCNA#', res, '_') then begin
-          res := StrTran('
+          res := StrTran('#%INI__#', '', 0, 0);
           Args.DocumentName := Substr(res, 9, 0);
        end;
 
