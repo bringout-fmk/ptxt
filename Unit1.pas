@@ -168,6 +168,7 @@ begin
    Atributi.Font.Size:=10;
    Atributi.TekStrana:='1';
    Atributi.Fonts:=[];
+   
    // visina
    if Args.Compat50 then
       Atributi.RowHeight:= HEIGHT_6
@@ -215,9 +216,17 @@ begin
         ppLabel4.Left := ppLabel4.Left + 50;
         ppSystemVariable2.Left:= ppSystemVariable2.Left + 50;
         Break;
+
        end;
+
+    
        ppoutfpipeline.Next;
      end;
+
+     if Args.DocumentName <> '' then
+        ppReport1.PrinterSetup.DocumentName := Args.DocumentName
+     else
+	ppReport1.PrinterSetup.DocumentName := '_noname_report_';
 
      Args.Logo:=True;
      Args.Datum:=False;
@@ -256,7 +265,6 @@ begin
        res := Upper(SubStr(paramstr(j), 1, 2));
        if res = '/D' then begin
           Args.DocumentName := substr(paramstr(j), 3, 0);
-
        end;
      end;
 
@@ -868,9 +876,6 @@ end;
 
 
 procedure TForm1.BitBtn1Click(Sender: TObject);
-//var
-  //srchEngine: TppCustomSearchEngine;
-
 begin
   ppReport1.Print;
 end;
@@ -888,8 +893,7 @@ end;
 procedure TForm1.ppReport1BeforePrint(Sender: TObject);
 begin
 
-   if Args.DocumentName <> '' then
-        ppReport1.PrinterSetup.DocumentName := Args.DocumentName;
+
 
 end;
 
