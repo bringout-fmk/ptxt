@@ -200,7 +200,7 @@ begin
        // primjer:
        // #INI__##%DOCNA#FAKTURA_00232
        if InStr('#%DOCNA#', res, '_') then begin
-          res := StrTran('#%INI__#', '', 0, 0);
+          res := StrTran(res, '#%INI__#', '', 0, 0);
           Args.DocumentName := Substr(res, 9, 0);
        end;
 

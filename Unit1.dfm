@@ -30,7 +30,7 @@ object Form1: TForm1
       Top = 8
       Width = 91
       Height = 13
-      Caption = 'Ver 01.54, 05.2006'
+      Caption = 'Ver 01.55, 05.2006'
     end
     object CheckBox1: TCheckBox
       Left = 79
