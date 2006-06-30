@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 443
-  Top = 353
+  Left = 285
+  Top = 146
   Width = 588
   Height = 515
   Caption = 'PTXT sigma-com'
@@ -17,7 +17,7 @@ object Form1: TForm1
   TextHeight = 13
   object pnlStatusBar: TPanel
     Left = 0
-    Top = 461
+    Top = 454
     Width = 580
     Height = 27
     Align = alBottom
@@ -65,7 +65,7 @@ object Form1: TForm1
     Left = 0
     Top = 41
     Width = 580
-    Height = 420
+    Height = 413
     Align = alClient
     Caption = 'pnlPreview'
     TabOrder = 1
@@ -73,7 +73,7 @@ object Form1: TForm1
       Left = 1
       Top = 1
       Width = 578
-      Height = 418
+      Height = 411
       Align = alClient
       BevelOuter = bvNone
       PageColor = clWindow
@@ -537,7 +537,6 @@ object Form1: TForm1
     PrinterSetup.PaperSize = 9
     Units = utMillimeters
     AfterPrint = EscapeExecute
-    BeforePrint = ppReport1BeforePrint
     DeviceType = 'Screen'
     OnCancel = ppReport1Cancel
     OnPreviewFormClose = ppReport1Cancel

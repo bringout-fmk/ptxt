@@ -125,7 +125,6 @@ type
     procedure BitBtn1Click(Sender: TObject);
     procedure ppReport1AssignPreviewFormSettings(Sender: TObject);
     procedure ppDetailBand1BeforePrint(Sender: TObject);
-    procedure ppReport1BeforePrint(Sender: TObject);
 
 
 
@@ -713,6 +712,7 @@ begin
   ppReport1.AllowPrintToArchive := True;
  end;
 
+  ppReport1.ShowCancelDialog := False;
   ppViewer1.Print;
 
 
@@ -888,13 +888,6 @@ end;
 procedure TForm1.ppDetailBand1BeforePrint(Sender: TObject);
 begin
  ppDetailBand1.Height := Atributi.RowHeight;
-end;
-
-procedure TForm1.ppReport1BeforePrint(Sender: TObject);
-begin
-
-
-
 end;
 
 end.
