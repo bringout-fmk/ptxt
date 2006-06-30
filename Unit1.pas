@@ -311,7 +311,7 @@ begin
         ppRichText.Width := ppRichText.Width - nLeftMargin;
       end;
 
-
+      ppReport1.ShowCancelDialog := false;
       ppViewer1.Print;
 
       Btngo.click;
