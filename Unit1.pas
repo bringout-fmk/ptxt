@@ -287,11 +287,13 @@ begin
 
       ExePath := ExtractFilePath(Application.ExeName);
       ini:= TIniFile.Create(ExePath+'FMK.INI');
-      try
 
-      // procitani string (ime printera)
-      // smjesti u varijablu res
+      try
+        // procitani string (ime printera)
+        // smjesti u varijablu res
         res := ini.ReadString('PTXT', 'DefaultWinPrinter', '');
+
+        // lijeva margina pri stampi
         nLeftMargin := ini.ReadInteger('PTXT', 'LeftMargin', 5);
 
       finally
